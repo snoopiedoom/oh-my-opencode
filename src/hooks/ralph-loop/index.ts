@@ -152,13 +152,15 @@ export function createRalphLoopHook(
     prompt: string,
     loopOptions?: { maxIterations?: number; completionPromise?: string; ultrawork?: boolean }
   ): boolean => {
+    const configEnabled = config?.ultrawork_mode?.enabled ?? false
+    const ultrawork = loopOptions?.ultrawork ?? configEnabled
     const state: RalphLoopState = {
       active: true,
       iteration: 1,
       max_iterations:
         loopOptions?.maxIterations ?? config?.default_max_iterations ?? DEFAULT_MAX_ITERATIONS,
       completion_promise: loopOptions?.completionPromise ?? DEFAULT_COMPLETION_PROMISE,
-      ultrawork: loopOptions?.ultrawork,
+      ultrawork: ultrawork,
       started_at: new Date().toISOString(),
       prompt,
       session_id: sessionID,

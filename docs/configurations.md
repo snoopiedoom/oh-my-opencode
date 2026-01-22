@@ -363,11 +363,51 @@ Add LSP servers via the `lsp` option in `~/.config/opencode/oh-my-opencode.json`
 
 Each server supports: `command`, `extensions`, `priority`, `env`, `initialization`, `disabled`.
 
+## Ultrawork Mode
+
+Enable ultrawork mode via configuration instead of requiring the keyword in every prompt. Also configure quality settings for unlimited token usage scenarios.
+
+```jsonc
+{
+  "ultrawork_mode": {
+    "enabled": false,
+    "quality": {
+      "max_tool_output_tokens": 50000,
+      "max_webfetch_tokens": 10000,
+      "apply_headroom_rule": true,
+      "headroom_percentage": 0.5,
+      "max_lsp_results": 200,
+      "max_ast_grep_matches": 500,
+      "max_grep_matches": 500,
+      "background_concurrency": 5,
+      "thinking_budget_tokens": 32000,
+      "disable_cost_preference": false
+    }
+  }
+}
+```
+
+| Option                                        | Default | Description                                                                                                                         |
+| --------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ultrawork_mode.enabled`                    | `false` | Always enable ultrawork mode without requiring keyword in prompt. |
+| `ultrawork_mode.quality.max_tool_output_tokens`    | `50000` | Maximum tokens for tool output truncation (null = unlimited). |
+| `ultrawork_mode.quality.max_webfetch_tokens`       | `10000` | Maximum tokens for webfetch output (null = unlimited). |
+| `ultrawork_mode.quality.apply_headroom_rule`      | `true` | Apply 50% headroom rule to dynamic truncation. |
+| `ultrawork_mode.quality.headroom_percentage`      | `0.5` | Headroom percentage for dynamic truncation (0.0-1.0). |
+| `ultrawork_mode.quality.max_lsp_results`       | `200` | Maximum LSP results (null = unlimited). |
+| `ultrawork_mode.quality.max_ast_grep_matches`     | `500` | Maximum AST-grep matches (null = unlimited). |
+| `ultrawork_mode.quality.max_grep_matches`       | `500` | Maximum Grep matches per file (null = unlimited). |
+| `ultrawork_mode.quality.background_concurrency`        | `5` | Background task concurrency (0 = unlimited). |
+| `ultrawork_mode.quality.thinking_budget_tokens`      | `32000` | Thinking budget tokens (0 = unlimited). |
+| `ultrawork_mode.quality.disable_cost_preference`      | `false` | Disable cost-based agent selection preference. |
+
+**For unlimited token usage (e.g., z.ai)**, set all quality settings to `null` or very high values.
+
 ## Experimental
 
 Opt-in experimental features that may change or be removed in future versions. Use with caution.
 
-```json
+```jsonc
 {
   "experimental": {
     "truncate_all_tool_outputs": true,

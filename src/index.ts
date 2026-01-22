@@ -120,6 +120,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   const toolOutputTruncator = isHookEnabled("tool-output-truncator")
     ? createToolOutputTruncatorHook(ctx, {
         experimental: pluginConfig.experimental,
+        ultraworkQuality: pluginConfig.ultrawork_mode?.quality,
       })
     : null;
   const directoryAgentsInjector = isHookEnabled("directory-agents-injector")
@@ -161,7 +162,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
       })
     : null;
   const keywordDetector = isHookEnabled("keyword-detector")
-    ? createKeywordDetectorHook(ctx, contextCollector)
+    ? createKeywordDetectorHook(ctx, contextCollector, pluginConfig.ultrawork_mode)
     : null;
   const contextInjectorMessagesTransform =
     createContextInjectorMessagesTransformHook(contextCollector);

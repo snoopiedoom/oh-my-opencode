@@ -1,4 +1,5 @@
 import type { PluginInput } from "@opencode-ai/plugin"
+import type { UltraworkModeConfig } from "../../config/schema"
 import { detectKeywordsWithType, extractPromptText, removeCodeBlocks } from "./detector"
 import { log } from "../../shared"
 import { isSystemDirective } from "../../shared/system-directive"
@@ -9,7 +10,11 @@ export * from "./detector"
 export * from "./constants"
 export * from "./types"
 
-export function createKeywordDetectorHook(ctx: PluginInput, collector?: ContextCollector) {
+export function createKeywordDetectorHook(
+  ctx: PluginInput,
+  collector?: ContextCollector,
+  ultraworkModeConfig?: UltraworkModeConfig
+) {
   return {
     "chat.message": async (
       input: {
@@ -58,7 +63,9 @@ export function createKeywordDetectorHook(ctx: PluginInput, collector?: ContextC
         }
       }
 
-      const hasUltrawork = detectedKeywords.some((k) => k.type === "ultrawork")
+      const hasUltrawork =
+        detectedKeywords.some((k) => k.type === "ultrawork") ||
+        (ultraworkModeConfig?.enabled ?? false)
       if (hasUltrawork) {
         log(`[keyword-detector] Ultrawork mode activated`, { sessionID: input.sessionID })
 

@@ -29,9 +29,11 @@ export interface TruncationResult {
 }
 
 export interface TruncationOptions {
-	targetMaxTokens?: number;
-	preserveHeaderLines?: number;
-	contextWindowLimit?: number;
+	targetMaxTokens?: number,
+	preserveHeaderLines?: number,
+	contextWindowLimit?: number,
+	applyHeadroomRule?: boolean,
+	headroomPercentage?: number,
 }
 
 function estimateTokens(text: string): number {
@@ -142,14 +144,16 @@ export async function getContextWindowUsage(
 }
 
 export async function dynamicTruncate(
-	ctx: PluginInput,
-	sessionID: string,
-	output: string,
-	options: TruncationOptions = {},
+  ctx: PluginInput,
+  sessionID: string,
+  output: string,
+  options: TruncationOptions = {},
 ): Promise<TruncationResult> {
 	const {
 		targetMaxTokens = DEFAULT_TARGET_MAX_TOKENS,
 		preserveHeaderLines = 3,
+		applyHeadroomRule = true,
+		headroomPercentage = 0.5,
 	} = options;
 
 	const usage = await getContextWindowUsage(ctx, sessionID);
@@ -159,8 +163,10 @@ export async function dynamicTruncate(
 		return truncateToTokenLimit(output, targetMaxTokens, preserveHeaderLines);
 	}
 
+	const applyHeadroom = applyHeadroomRule ?? true
+	const headroomRatio = headroomPercentage ?? 0.5
 	const maxOutputTokens = Math.min(
-		usage.remainingTokens * 0.5,
+		applyHeadroom ? usage.remainingTokens * headroomRatio : Infinity,
 		targetMaxTokens,
 	);
 

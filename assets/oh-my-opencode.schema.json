@@ -2364,6 +2364,10 @@
         },
         "state_dir": {
           "type": "string"
+        },
+        "ultrawork_enabled": {
+          "default": false,
+          "type": "boolean"
         }
       }
     },
@@ -2418,6 +2422,104 @@
         "include_co_authored_by": {
           "default": true,
           "type": "boolean"
+        }
+      }
+    },
+    "ultrawork_mode": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "type": "boolean"
+        },
+        "quality": {
+          "type": "object",
+          "properties": {
+            "max_tool_output_tokens": {
+              "default": 50000,
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "max_webfetch_tokens": {
+              "default": 10000,
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "apply_headroom_rule": {
+              "default": true,
+              "type": "boolean"
+            },
+            "headroom_percentage": {
+              "default": 0.5,
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "max_lsp_results": {
+              "default": 200,
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "max_ast_grep_matches": {
+              "default": 500,
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "max_grep_matches": {
+              "default": 500,
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "background_concurrency": {
+              "default": 5,
+              "type": "number",
+              "minimum": 0
+            },
+            "thinking_budget_tokens": {
+              "default": 32000,
+              "type": "number",
+              "minimum": 0
+            },
+            "disable_cost_preference": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
         }
       }
     }
