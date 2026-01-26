@@ -80,7 +80,7 @@ export class ConcurrencyManager {
     while (queue && queue.length > 0) {
       const next = queue.shift()!
       if (!next.settled) {
-        // Hand off the slot to this waiter (count stays the same)
+        // Hand off to slot to this waiter (count stays the same)
         next.resolve()
         return
       }

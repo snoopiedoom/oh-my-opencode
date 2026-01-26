@@ -1,5 +1,5 @@
 import type { PluginInput } from "@opencode-ai/plugin"
-import type { ExperimentalConfig } from "../config/schema"
+import type { ExperimentalConfig, UltraworkModeQualitySettings } from "../config/schema"
 import { createDynamicTruncator } from "../shared/dynamic-truncator"
 
 const DEFAULT_MAX_TOKENS = 50_000 // ~200k chars
@@ -28,11 +28,13 @@ const TOOL_SPECIFIC_MAX_TOKENS: Record<string, number> = {
 
 interface ToolOutputTruncatorOptions {
   experimental?: ExperimentalConfig
+  ultraworkQuality?: UltraworkModeQualitySettings
 }
 
 export function createToolOutputTruncatorHook(ctx: PluginInput, options?: ToolOutputTruncatorOptions) {
   const truncator = createDynamicTruncator(ctx)
   const truncateAll = options?.experimental?.truncate_all_tool_outputs ?? false
+  const quality = options?.ultraworkQuality
 
   const toolExecuteAfter = async (
     input: { tool: string; sessionID: string; callID: string },
@@ -41,11 +43,18 @@ export function createToolOutputTruncatorHook(ctx: PluginInput, options?: ToolOu
     if (!truncateAll && !TRUNCATABLE_TOOLS.includes(input.tool)) return
 
     try {
-      const targetMaxTokens = TOOL_SPECIFIC_MAX_TOKENS[input.tool] ?? DEFAULT_MAX_TOKENS
+      const maxToolOutputTokens = quality?.max_tool_output_tokens ?? DEFAULT_MAX_TOKENS
+      const maxWebfetchTokens = quality?.max_webfetch_tokens ?? WEBFETCH_MAX_TOKENS
+      const targetMaxTokens =
+        TOOL_SPECIFIC_MAX_TOKENS[input.tool] ?? maxWebfetchTokens ?? maxToolOutputTokens
       const { result, truncated } = await truncator.truncate(
         input.sessionID,
         output.output,
-        { targetMaxTokens }
+        {
+          targetMaxTokens,
+          applyHeadroomRule: quality?.apply_headroom_rule,
+          headroomPercentage: quality?.headroom_percentage,
+        }
       )
       if (truncated) {
         output.output = result

@@ -1,4 +1,4 @@
-import { spawn } from "bun"
+import { spawn } from "child_process"
 import { existsSync } from "fs"
 import {
   getSgCliPath,
@@ -113,8 +113,8 @@ export async function runSg(options: RunOptions): Promise<SgResult> {
   let exitCode: number
 
   try {
-    stdout = await Promise.race([new Response(proc.stdout).text(), timeoutPromise])
-    stderr = await new Response(proc.stderr).text()
+    stdout = await Promise.race([new Promise<Buffer>((resolve) => { const chunks: Buffer[] = []; proc.stdout.on("data", (chunk) => chunks.push(chunk)); proc.stdout.on("end", () => resolve(Buffer.concat(chunks))) }), timeoutPromise])
+    stderr = await new Promise<Buffer>((resolve) => { const chunks: Buffer[] = []; proc.stderr.on("data", (chunk) => chunks.push(chunk)); proc.stderr.on("end", () => resolve(Buffer.concat(chunks))) })
     exitCode = await proc.exited
   } catch (e) {
     const error = e as Error

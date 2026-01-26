@@ -28,6 +28,8 @@ export function loadConfigFromPath(
         const errorMsg = result.error.issues
           .map((i) => `${i.path.join(".")}: ${i.message}`)
           .join(", ");
+        console.error("[CONFIG ERROR] Validation failed for:", configPath);
+        console.error("[CONFIG ERROR]", result.error.issues);
         log(`Config validation error in ${configPath}:`, result.error.issues);
         addConfigLoadError({
           path: configPath,

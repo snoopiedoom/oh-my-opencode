@@ -1,4 +1,4 @@
-import { spawn } from "bun"
+import { spawn } from "child_process"
 import {
   resolveGrepCli,
   type GrepBackend,
@@ -133,9 +133,9 @@ export async function runRgFiles(
   })
 
   try {
-    const stdout = await Promise.race([new Response(proc.stdout).text(), timeoutPromise])
-    const stderr = await new Response(proc.stderr).text()
-    const exitCode = await proc.exited
+    const stdout = await Promise.race([new Promise<Buffer>((resolve) => { const chunks: Buffer[] = []; proc.stdout.on("data", (chunk) => chunks.push(chunk)); proc.stdout.on("end", () => resolve(Buffer.concat(chunks))) }), timeoutPromise])
+    const stderr = await new Promise<Buffer>((resolve) => { const chunks: Buffer[] = []; proc.stderr.on("data", (chunk) => chunks.push(chunk)); proc.stderr.on("end", () => resolve(Buffer.concat(chunks))) })
+    const exitCode = await new Promise<number>((resolve) => { proc.on("close", (code) => resolve(code ?? 1)) })
 
     if (exitCode > 1 && stderr.trim()) {
       return {

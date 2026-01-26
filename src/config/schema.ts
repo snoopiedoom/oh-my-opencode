@@ -268,15 +268,6 @@ export const SkillsConfigSchema = z.union([
   }).partial()),
 ])
 
-export const RalphLoopConfigSchema = z.object({
-  /** Enable ralph loop functionality (default: false - opt-in feature) */
-  enabled: z.boolean().default(false),
-  /** Default max iterations if not specified in command (default: 100) */
-  default_max_iterations: z.number().min(1).max(1000).default(100),
-  /** Custom state file directory relative to project root (default: .opencode/) */
-  state_dir: z.string().optional(),
-})
-
 export const BackgroundTaskConfigSchema = z.object({
   defaultConcurrency: z.number().min(1).optional(),
   providerConcurrency: z.record(z.string(), z.number().min(0)).optional(),
@@ -295,6 +286,47 @@ export const GitMasterConfigSchema = z.object({
   commit_footer: z.boolean().default(true),
   /** Add "Co-authored-by: Sisyphus" trailer to commit messages (default: true) */
   include_co_authored_by: z.boolean().default(true),
+})
+
+export const UltraworkModeQualitySettingsSchema = z.object({
+  /** Maximum tokens for tool output truncation (null = unlimited, default: 50,000) */
+  max_tool_output_tokens: z.number().min(0).nullable().default(50_000),
+  /** Maximum tokens for webfetch output (null = unlimited, default: 10,000) */
+  max_webfetch_tokens: z.number().min(0).nullable().default(10_000),
+  /** Apply 50% headroom rule to dynamic truncation (default: true) */
+  apply_headroom_rule: z.boolean().default(true),
+  /** Headroom percentage for dynamic truncation (0.0-1.0, default: 0.5) */
+  headroom_percentage: z.number().min(0).max(1).default(0.5),
+  /** Maximum LSP results (references, symbols, diagnostics) - null = unlimited (default: 200) */
+  max_lsp_results: z.number().min(0).nullable().default(200),
+  /** Maximum AST-grep matches - null = unlimited (default: 500) */
+  max_ast_grep_matches: z.number().min(0).nullable().default(500),
+  /** Maximum Grep matches per file - null = unlimited (default: 500) */
+  max_grep_matches: z.number().min(0).nullable().default(500),
+  /** Background task concurrency (0 = unlimited, default: 5) */
+  background_concurrency: z.number().min(0).default(5),
+  /** Thinking budget tokens (0 = unlimited, default: 32,000) */
+  thinking_budget_tokens: z.number().min(0).default(32_000),
+  /** Disable cost-based agent selection preference (default: false) */
+  disable_cost_preference: z.boolean().default(false),
+})
+
+export const UltraworkModeConfigSchema = z.object({
+  /** Always enable ultrawork mode without requiring keyword in prompt (default: false) */
+  enabled: z.boolean().default(false),
+  /** Quality settings for unlimited token usage scenarios */
+  quality: UltraworkModeQualitySettingsSchema.optional(),
+})
+
+export const RalphLoopConfigSchema = z.object({
+  /** Enable ralph loop functionality (default: false - opt-in feature) */
+  enabled: z.boolean().default(false),
+  /** Default max iterations if not specified in command (default: 100) */
+  default_max_iterations: z.number().min(1).max(1000).default(100),
+  /** Custom state file directory relative to project root (default: .opencode/) */
+  state_dir: z.string().optional(),
+  /** Ultrawork mode configuration (shared with main ultrawork_mode) */
+  ultrawork_mode: UltraworkModeConfigSchema.optional(),
 })
 
 export const OhMyOpenCodeConfigSchema = z.object({
@@ -316,6 +348,7 @@ export const OhMyOpenCodeConfigSchema = z.object({
   background_task: BackgroundTaskConfigSchema.optional(),
   notification: NotificationConfigSchema.optional(),
   git_master: GitMasterConfigSchema.optional(),
+  ultrawork_mode: UltraworkModeConfigSchema.optional(),
 })
 
 export type OhMyOpenCodeConfig = z.infer<typeof OhMyOpenCodeConfigSchema>
@@ -326,6 +359,8 @@ export type AgentName = z.infer<typeof AgentNameSchema>
 export type HookName = z.infer<typeof HookNameSchema>
 export type BuiltinCommandName = z.infer<typeof BuiltinCommandNameSchema>
 export type BuiltinSkillName = z.infer<typeof BuiltinSkillNameSchema>
+export type UltraworkModeConfig = z.infer<typeof UltraworkModeConfigSchema>
+export type UltraworkModeQualitySettings = z.infer<typeof UltraworkModeQualitySettingsSchema>
 export type SisyphusAgentConfig = z.infer<typeof SisyphusAgentConfigSchema>
 export type CommentCheckerConfig = z.infer<typeof CommentCheckerConfigSchema>
 export type ExperimentalConfig = z.infer<typeof ExperimentalConfigSchema>

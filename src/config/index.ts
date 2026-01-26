@@ -9,6 +9,8 @@ export {
   SisyphusAgentConfigSchema,
   ExperimentalConfigSchema,
   RalphLoopConfigSchema,
+  UltraworkModeConfigSchema,
+  UltraworkModeQualitySettingsSchema,
 } from "./schema"
 
 export type {

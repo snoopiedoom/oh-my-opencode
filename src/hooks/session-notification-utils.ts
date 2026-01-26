@@ -1,4 +1,4 @@
-import { spawn } from "bun"
+import { spawn as spawnProcess } from "child_process"
 
 type Platform = "darwin" | "linux" | "win32" | "unsupported"
 

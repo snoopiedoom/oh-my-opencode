@@ -1,0 +1,48 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "ultrawork_mode": {
+    "enabled": true,
+    "quality": {
+      "max_tool_output_tokens": 75000,
+      "max_webfetch_tokens": 20000,
+      "apply_headroom_rule": true,
+      "headroom_percentage": 0.5,
+      "max_lsp_results": 300,
+      "max_ast_grep_matches": 750,
+      "max_grep_matches": 750,
+      "background_concurrency": 8,
+      "thinking_budget_tokens": 64000,
+      "disable_cost_preference": true
+    }
+  },
+  "background_task": {
+    "defaultConcurrency": 0
+  },
+  "disabled_hooks": [
+    "tool-output-truncator",
+    "context-window-monitor"
+  ],
+  "agents": {
+    "Sisyphus": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "librarian": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "oracle": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "frontend-ui-ux-engineer": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "document-writer": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "multimodal-looker": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "explore": {
+      "model": "zai-coding-plan/glm-4.7"
+    }
+  }
+}

@@ -1,5 +1,7 @@
 import type { PluginInput } from "@opencode-ai/plugin"
+import type { UltraworkModeConfig } from "../../config/schema"
 import { detectKeywordsWithType, extractPromptText, removeCodeBlocks } from "./detector"
+import { getUltraworkMessage } from "./constants"
 import { log } from "../../shared"
 import { isSystemDirective } from "../../shared/system-directive"
 import { getMainSessionID, getSessionAgent, subagentSessions } from "../../features/claude-code-session-state"
@@ -9,7 +11,11 @@ export * from "./detector"
 export * from "./constants"
 export * from "./types"
 
-export function createKeywordDetectorHook(ctx: PluginInput, collector?: ContextCollector) {
+export function createKeywordDetectorHook(
+  ctx: PluginInput,
+  collector?: ContextCollector,
+  ultraworkModeConfig?: UltraworkModeConfig
+) {
   return {
     "chat.message": async (
       input: {
@@ -27,13 +33,17 @@ export function createKeywordDetectorHook(ctx: PluginInput, collector?: ContextC
 
       if (isSystemDirective(promptText)) {
         log(`[keyword-detector] Skipping system directive message`, { sessionID: input.sessionID })
-        return
-      }
+          return
+        }
 
       const currentAgent = getSessionAgent(input.sessionID) ?? input.agent
       let detectedKeywords = detectKeywordsWithType(removeCodeBlocks(promptText), currentAgent)
 
-      if (detectedKeywords.length === 0) {
+      const isUltraworkEnabledByConfig = ultraworkModeConfig?.enabled ?? false
+      const mainSessionID = getMainSessionID()
+
+      // Early return: no keywords AND config-based ultrawork not enabled
+      if (detectedKeywords.length === 0 && !isUltraworkEnabledByConfig) {
         return
       }
 
@@ -43,9 +53,20 @@ export function createKeywordDetectorHook(ctx: PluginInput, collector?: ContextC
       if (isBackgroundTaskSession) {
         return
       }
-
-      const mainSessionID = getMainSessionID()
+ 
       const isNonMainSession = mainSessionID && input.sessionID !== mainSessionID
+
+      // If ultrawork is enabled by config but not detected in prompt, add it
+      // Must happen BEFORE non-main session filtering to ensure it's added
+      const hasUltraworkKeyword = detectedKeywords.some((k) => k.type === "ultrawork")
+      const hasUltrawork = hasUltraworkKeyword || isUltraworkEnabledByConfig
+
+      if (isUltraworkEnabledByConfig && !hasUltraworkKeyword) {
+        detectedKeywords.push({
+          type: "ultrawork",
+          message: getUltraworkMessage(currentAgent),
+        })
+      }
 
       if (isNonMainSession) {
         detectedKeywords = detectedKeywords.filter((k) => k.type === "ultrawork")
@@ -57,8 +78,6 @@ export function createKeywordDetectorHook(ctx: PluginInput, collector?: ContextC
           return
         }
       }
-
-      const hasUltrawork = detectedKeywords.some((k) => k.type === "ultrawork")
       if (hasUltrawork) {
         log(`[keyword-detector] Ultrawork mode activated`, { sessionID: input.sessionID })
 
