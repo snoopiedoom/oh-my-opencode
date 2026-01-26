@@ -34,8 +34,8 @@ import {
 } from "./hooks";
 import {
   contextCollector,
-  createContextInjectorMessagesTransformHook,
 } from "./features/context-injector";
+import { createContextInjectorMessagesTransformHook, createContextInjectorHook } from "./features/context-injector/injector";
 import { applyAgentVariant, resolveAgentVariant } from "./shared/agent-variant";
 import { createFirstMessageVariantGate } from "./shared/first-message-variant";
 import {
@@ -164,8 +164,10 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   const keywordDetector = isHookEnabled("keyword-detector")
     ? createKeywordDetectorHook(ctx, contextCollector, pluginConfig.ultrawork_mode)
     : null;
+
   const contextInjectorMessagesTransform =
     createContextInjectorMessagesTransformHook(contextCollector);
+  const contextInjector = createContextInjectorHook(contextCollector);
   const agentUsageReminder = isHookEnabled("agent-usage-reminder")
     ? createAgentUsageReminderHook(ctx)
     : null;
@@ -324,6 +326,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
       }
 
       await keywordDetector?.["chat.message"]?.(input, output);
+      await contextInjector?.["chat.message"]?.(input, output);
       await claudeCodeHooks["chat.message"]?.(input, output);
       await autoSlashCommand?.["chat.message"]?.(input, output);
       await startWork?.["chat.message"]?.(input, output);

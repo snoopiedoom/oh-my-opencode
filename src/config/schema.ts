@@ -265,17 +265,6 @@ export const SkillsConfigSchema = z.union([
   }).partial()),
 ])
 
-export const RalphLoopConfigSchema = z.object({
-  /** Enable ralph loop functionality (default: false - opt-in feature) */
-  enabled: z.boolean().default(false),
-  /** Default max iterations if not specified in command (default: 100) */
-  default_max_iterations: z.number().min(1).max(1000).default(100),
-  /** Custom state file directory relative to project root (default: .opencode/) */
-  state_dir: z.string().optional(),
-  /** Always enable ultrawork mode for Ralph Loop (default: false) */
-  ultrawork_enabled: z.boolean().default(false),
-})
-
 export const BackgroundTaskConfigSchema = z.object({
   defaultConcurrency: z.number().min(1).optional(),
   providerConcurrency: z.record(z.string(), z.number().min(1)).optional(),
@@ -324,6 +313,17 @@ export const UltraworkModeConfigSchema = z.object({
   enabled: z.boolean().default(false),
   /** Quality settings for unlimited token usage scenarios */
   quality: UltraworkModeQualitySettingsSchema.optional(),
+})
+
+export const RalphLoopConfigSchema = z.object({
+  /** Enable ralph loop functionality (default: false - opt-in feature) */
+  enabled: z.boolean().default(false),
+  /** Default max iterations if not specified in command (default: 100) */
+  default_max_iterations: z.number().min(1).max(1000).default(100),
+  /** Custom state file directory relative to project root (default: .opencode/) */
+  state_dir: z.string().optional(),
+  /** Ultrawork mode configuration (shared with main ultrawork_mode) */
+  ultrawork_mode: UltraworkModeConfigSchema.optional(),
 })
 
 export const OhMyOpenCodeConfigSchema = z.object({

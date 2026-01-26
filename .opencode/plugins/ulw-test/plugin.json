@@ -1,0 +1,6 @@
+{
+  "name": "ulw-test",
+  "version": "1.0.0",
+  "description": "Ultrawork test plugin",
+  "entry": "ulw-test.ts"
+}

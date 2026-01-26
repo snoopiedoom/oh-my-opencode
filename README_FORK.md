@@ -57,10 +57,28 @@ Added persistent ultrawork mode configuration with quality settings for unlimite
 - **Quality-first**: Uses best models regardless of cost when enabled
 
 ## Testing
-Use `--directory` flag to test without breaking existing install:
+
+### Option 1: Run from dev directory
 ```bash
 cd /mnt/c/dev/oh-my-opencode
 opencode --directory /tmp/test-project
 ```
+
+### Option 2: Temporary global link (Recommended for testing)
+```bash
+# 1. Build
+cd /mnt/c/dev/oh-my-opencode
+bun run build
+
+# 2. Create global symlink
+bun link  # Creates global symlink to your dev version
+
+# 3. Now "oh-my-opencode" everywhere points to your dev version
+opencode --directory /tmp/test-project
+
+# 4. To restore: bun unlink oh-my-opencode
+```
+
+This is fast and allows normal testing. Just remember to `bun unlink` when done.
 
 Copy `example-zai-config.json` to your test project to use optimized defaults.

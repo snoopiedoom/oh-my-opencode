@@ -15,17 +15,34 @@
       "disable_cost_preference": true
     }
   },
-  "disabled_hooks": [
-    "tool-output-truncator",
-    "context-window-monitor"
-  ]
-}
-  },
   "background_task": {
     "defaultConcurrency": 0
   },
   "disabled_hooks": [
     "tool-output-truncator",
     "context-window-monitor"
-  ]
+  ],
+  "agents": {
+    "Sisyphus": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "librarian": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "oracle": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "frontend-ui-ux-engineer": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "document-writer": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "multimodal-looker": {
+      "model": "zai-coding-plan/glm-4.7"
+    },
+    "explore": {
+      "model": "zai-coding-plan/glm-4.7"
+    }
+  }
 }

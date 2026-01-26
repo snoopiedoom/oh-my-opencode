@@ -1,4 +1,4 @@
-import { spawn } from "bun"
+import { spawn } from "child_process"
 import { existsSync, mkdirSync, chmodSync, unlinkSync, appendFileSync } from "fs"
 import { join } from "path"
 import { homedir, tmpdir } from "os"
@@ -88,10 +88,10 @@ async function extractTarGz(archivePath: string, destDir: string): Promise<void>
     stderr: "pipe",
   })
   
-  const exitCode = await proc.exited
+  const exitCode = await new Promise<number>((resolve) => { proc.on("close", (code) => resolve(code ?? 1)) })
   
   if (exitCode !== 0) {
-    const stderr = await new Response(proc.stderr).text()
+    const stderr = await new Promise<Buffer>((resolve) => { const chunks: Buffer[] = []; proc.stderr.on("data", (chunk) => chunks.push(chunk)); proc.stderr.on("end", () => resolve(Buffer.concat(chunks))) })
     throw new Error(`tar extraction failed (exit ${exitCode}): ${stderr}`)
   }
 }

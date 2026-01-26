@@ -1,4 +1,4 @@
-import { spawn } from "bun"
+import { spawn } from "child_process"
 import { createRequire } from "module"
 import { dirname, join } from "path"
 import { existsSync } from "fs"
@@ -181,8 +181,8 @@ export async function runCommentChecker(input: HookInput, cliPath?: string, cust
     proc.stdin.end()
 
     const stdout = await new Response(proc.stdout).text()
-    const stderr = await new Response(proc.stderr).text()
-    const exitCode = await proc.exited
+    const stderr = await new Promise<Buffer>((resolve) => { const chunks: Buffer[] = []; proc.stderr.on("data", (chunk) => chunks.push(chunk)); proc.stderr.on("end", () => resolve(Buffer.concat(chunks))) })
+    const exitCode = await new Promise<number>((resolve) => { proc.on("close", (code) => resolve(code ?? 1)) })
 
     debugLog("exit code:", exitCode, "stdout length:", stdout.length, "stderr length:", stderr.length)
 

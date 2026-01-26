@@ -424,6 +424,7 @@ describe("ralph-loop", () => {
         config: {
           enabled: true,
           default_max_iterations: 200,
+          ultrawork_mode: { enabled: false },
         },
       })
 

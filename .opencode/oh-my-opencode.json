@@ -1,0 +1,164 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "ultrawork_mode": {
+    "enabled": true,
+    "quality": {
+      "max_tool_output_tokens": 75000,
+      "max_webfetch_tokens": 20000,
+      "apply_headroom_rule": true,
+      "headroom_percentage": 0.5,
+      "max_lsp_results": 300,
+      "max_ast_grep_matches": 750,
+      "max_grep_matches": 750,
+      "background_concurrency": 8,
+      "thinking_budget_tokens": 64000,
+      "disable_cost_preference": true
+    }
+  },
+  "categories": {
+    "visual-engineering": {
+      "model": "zai-coding-plan/glm-4.7",
+      "description": "Frontend, UI/UX, design, styling, animation",
+      "maxTokens": 16384,
+      "temperature": 0.7,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 32000
+      },
+      "reasoningEffort": "high",
+      "textVerbosity": "medium"
+    },
+    "ultrabrain": {
+      "model": "zai-coding-plan/glm-4.7",
+      "description": "Deep logical reasoning, complex architecture decisions requiring extensive analysis",
+      "maxTokens": 24576,
+      "temperature": 0.3,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 64000
+      },
+      "reasoningEffort": "high",
+      "textVerbosity": "medium"
+    },
+    "artistry": {
+      "model": "zai-coding-plan/glm-4.7",
+      "description": "Highly creative/artistic tasks, novel ideas",
+      "maxTokens": 16384,
+      "temperature": 0.9,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 32000
+      },
+      "reasoningEffort": "medium",
+      "textVerbosity": "medium"
+    },
+    "quick": {
+      "model": "zai-coding-plan/glm-4.7",
+      "description": "Trivial tasks - single file changes, typo fixes, simple modifications",
+      "maxTokens": 8192,
+      "temperature": 0.2,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 8000
+      },
+      "reasoningEffort": "low",
+      "textVerbosity": "low"
+    },
+    "unspecified-low": {
+      "model": "zai-coding-plan/glm-4.7",
+      "description": "Tasks that don't fit other categories, low effort required",
+      "maxTokens": 8192,
+      "temperature": 0.4,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000
+      },
+      "reasoningEffort": "medium",
+      "textVerbosity": "low"
+    },
+    "unspecified-high": {
+      "model": "zai-coding-plan/glm-4.7",
+      "description": "Tasks that don't fit other categories, high effort required",
+      "maxTokens": 16384,
+      "temperature": 0.5,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 32000
+      },
+      "reasoningEffort": "high",
+      "textVerbosity": "medium"
+    },
+    "writing": {
+      "model": "zai-coding-plan/glm-4.7",
+      "description": "Documentation, prose, technical writing",
+      "maxTokens": 16384,
+      "temperature": 0.6,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000
+      },
+      "reasoningEffort": "medium",
+      "textVerbosity": "medium"
+    }
+  },
+  "agents": {
+    "Sisyphus": {
+      "model": "zai-coding-plan/glm-4.7",
+      "maxTokens": 16384,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 64000
+      }
+    },
+    "librarian": {
+      "model": "zai-coding-plan/glm-4.7",
+      "maxTokens": 12288,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000
+      }
+    },
+    "oracle": {
+      "model": "zai-coding-plan/glm-4.7",
+      "maxTokens": 24576,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 64000
+      }
+    },
+    "frontend-ui-ux-engineer": {
+      "model": "zai-coding-plan/glm-4.7",
+      "maxTokens": 16384,
+      "temperature": 0.7,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 32000
+      }
+    },
+    "document-writer": {
+      "model": "zai-coding-plan/glm-4.7",
+      "maxTokens": 16384,
+      "temperature": 0.6,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000
+      }
+    },
+    "multimodal-looker": {
+      "model": "zai-coding-plan/glm-4.7",
+      "maxTokens": 12288,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 24000
+      }
+    },
+    "explore": {
+      "model": "zai-coding-plan/glm-4.7",
+      "maxTokens": 12288,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000
+      }
+    }
+  }
+}

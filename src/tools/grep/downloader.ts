@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, chmodSync, unlinkSync, readdirSync } from "node:fs"
 import { join } from "node:path"
-import { spawn } from "bun"
+import { spawn } from "child_process"
 import { extractZip as extractZipBase } from "../../shared"
 
 export function findFileRecursive(dir: string, filename: string): string | null {
@@ -68,7 +68,7 @@ async function extractTarGz(archivePath: string, destDir: string): Promise<void>
     stderr: "pipe",
   })
 
-  const exitCode = await proc.exited
+  const exitCode = await new Promise<number>((resolve) => { proc.on("close", (code) => resolve(code ?? 1)) })
   if (exitCode !== 0) {
     const stderr = await new Response(proc.stderr).text()
     throw new Error(`Failed to extract tar.gz: ${stderr}`)
